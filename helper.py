@@ -1,7 +1,8 @@
 import os
 import json
 from tqdm import tqdm
-
+import numpy as np
+from keras.preprocessing.sequence import pad_sequences
 
 def read_fb_messages(dump_path="data/messages/inbox/"):
     messages = []
@@ -38,3 +39,15 @@ def create_context_target_pairs(corpus):
             target.append(sentence[i])
     return context, target
 
+def generate_sentence(model, tokenizer, maxlen):
+    sentence = []
+    while (len(sentence) < maxlen):
+        tokens = tokenizer.texts_to_sequences([sentence])
+        input_toks = np.array(pad_sequences(tokens, maxlen=maxlen-1, padding='post'))
+        yhat = model.predict(input_toks)[0]
+        word_i = np.random.choice(yhat.shape[0], p=yhat)
+        word = tokenizer.index_word[word_i]
+        sentence.append(word)
+        if word == "<EOS>":
+            break
+    return sentence
