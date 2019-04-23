@@ -33,7 +33,7 @@ def create_context_target_pairs(corpus):
     context = []
     target = []
     for sentence in corpus:
-        for i in range(1, len(sentence)):
+        for i in range(0, len(sentence)):
             subsequence = sentence[:i].copy()
             context.append(subsequence)
             target.append(sentence[i])
